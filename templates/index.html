@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortran File Uploader</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Fortran File Uploader & Execution Tool</h1>
+        <h2>Upload, Compile, and Execute Fortran Files on HPC</h2>
+    </header>
+
+    <!-- User credentials form -->
+    <section id="credentials-section">
+        <h3>Enter HPC Credentials</h3>
+        <form id="credentials-form">
+            <label for="username">HPC Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">HPC Password:</label>
+            <input type="password" id="password" name="password" required>
+        </form>
+    </section>
+
+    <!-- Drag-and-drop or file input area -->
+    <section id="file-upload-section">
+        <h3>Drag and Drop Fortran Files</h3>
+        <div id="drop-area">
+            <p>Drag files here or click to upload</p>
+            <input type="file" id="fileElem" multiple accept=".f90">
+            <label class="button" for="fileElem">Select files</label>
+        </div>
+    </section>
+
+    <!-- Output area for VTK files -->
+    <section id="output-section">
+        <h3>VTK Files Output</h3>
+        <p>Once your Fortran files are executed, the generated VTK files will be displayed here:</p>
+        <ul id="output-list"></ul>
+    </section>
+
+    <!-- User feedback section -->
+    <section id="feedback-section">
+        <p id="feedback"></p>
+    </section>
+
+    <footer>
+        <p>Fortran File Uploader & HPC Executor | 2024</p>
+    </footer>
+
+<script src="{{ url_for('static', filename='uploader.js') }}"></script>
+
+</body>
+</html>
