@@ -1,55 +1,73 @@
-/* styles.css */
-
 /* General body styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
     background-color: #f0f0f0;
+    box-sizing: border-box;
 }
 
-h2 {
-    color: #333;
+/* Header Styling */
+header h1 {
     text-align: center;
+    font-size: 2rem;
+    color: #333;
 }
 
-/* Drop area and output area styling */
-#drop-area, #output-area {
+header h2 {
+    text-align: center;
+    color: #555;
+    font-size: 1.2rem;
+}
+
+/* Section Styling */
+section {
+    margin-bottom: 30px;
+}
+
+/* Drag and drop area styling */
+#drop-area {
     width: 100%;
-    height: 300px;
+    height: 200px;
     border: 2px dashed #ccc;
     text-align: center;
-    padding-top: 100px;
+    padding-top: 50px;
     font-size: 18px;
     background-color: #f9f9f9;
     margin-bottom: 20px;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    position: relative;
+    border-radius: 10px;
+}
+
+#drop-area p {
+    font-size: 16px;
+    color: #555;
 }
 
 #drop-area.highlight {
-    border-color: green;
-    background-color: #f0fff0;
+    border-color: #28a745;
+    background-color: #e8f5e8;
 }
 
-/* Styling for buttons */
-.button {
+/* Style for the input file */
+input[type="file"] {
+    display: none;
+}
+
+label.button {
     display: inline-block;
     padding: 10px 20px;
     background-color: #28a745;
     color: white;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    font-size: 16px;
+    text-align: center;
 }
 
-.button:hover {
+label.button:hover {
     background-color: #218838;
-}
-
-/* Input type file (hidden) */
-input[type="file"] {
-    display: none;
 }
 
 /* Output list styling */
@@ -62,6 +80,15 @@ input[type="file"] {
 
 #output-list li {
     margin: 5px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s ease;
+}
+
+#output-list li:hover {
+    background-color: #e9ecef;
 }
 
 /* Links in the output list */
@@ -74,4 +101,19 @@ input[type="file"] {
 #output-list a:hover {
     text-decoration: underline;
     color: #0056b3;
+}
+
+/* User feedback section */
+#feedback-section {
+    text-align: center;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding-top: 20px;
+    font-size: 14px;
+    color: #777;
 }

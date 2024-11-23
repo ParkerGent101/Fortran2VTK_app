@@ -1,6 +1,7 @@
 let dropArea = document.getElementById('drop-area');
 let outputList = document.getElementById('output-list');
 let feedback = document.getElementById('feedback');
+let logsContainer = document.getElementById('logs'); // Container for logs
 
 // Prevent default behaviors for drag and drop
 ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -19,7 +20,7 @@ dropArea.addEventListener('drop', unhighlightDropArea, false);
 dropArea.addEventListener('drop', handleDrop, false);
 
 // Handle file selection through the input button
-document.getElementById('fileElem').addEventListener('change', function(e) {
+document.getElementById('fileElem').addEventListener('change', function (e) {
     let files = e.target.files;
     handleFiles(files);
 });
@@ -74,6 +75,7 @@ function handleFiles(files) {
 
     // Append each file to the FormData
     [...files].forEach(file => {
+        console.log(`Appending file: ${file.name}`);
         formData.append('files', file);
     });
 
@@ -85,48 +87,58 @@ function handleFiles(files) {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => { 
-                throw new Error(err.message || 'Network response was not ok'); 
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log(data); // Log the entire data response to check its structure
-        if (data.status === 'success') {
-            // Assuming the VTK file is returned as part of the success response
-            let vtkFile = data.vtk_file; // Update this based on your backend response structure
-            if (vtkFile) {
-                displayVTKFiles([vtkFile]); // Wrap vtkFile in an array for display function
-                feedback.textContent = 'Upload and execution successful!';
-                feedback.style.color = 'green';
-            } else {
-                feedback.textContent = 'No VTK files returned from the server.';
-                feedback.style.color = 'orange';
+        .then(response => {
+            if (!response.ok) {
+                console.error('Server error:', response.status);
+                return response.json().then(err => {
+                    throw new Error(err.message || 'Network response was not ok');
+                });
             }
-        } else {
-            throw new Error(data.message || 'Upload failed.');
-        }
-    })    
-    .catch(err => {
-        feedback.textContent = 'Upload failed: ' + err.message;
-        feedback.style.color = 'red';
-        console.error(err);
-    });
+            return response.json();
+        })
+        .then(data => {
+            console.log('Server response:', data);
+
+            if (data.status === 'success') {
+                let vtkFiles = data.vtk_files; // Access the list of VTK files from the backend
+                if (vtkFiles && vtkFiles.length > 0) {
+                    displayVTKFiles(vtkFiles); // Display the list of VTK files
+                    feedback.textContent = 'Upload and execution successful!';
+                    feedback.style.color = 'green';
+                } else {
+                    feedback.textContent = 'No VTK files returned from the server.';
+                    feedback.style.color = 'orange';
+                }
+            } else {
+                throw new Error(data.message || 'Upload failed.');
+            }
+        })
+        .catch(err => {
+            feedback.textContent = `Upload failed: ${err.message}`;
+            feedback.style.color = 'red';
+            console.error('Error:', err);
+        });
 }
 
 // Display the list of VTK files
 function displayVTKFiles(files) {
     outputList.innerHTML = ''; // Clear previous outputs
     files.forEach(file => {
+        console.log(`Adding VTK file to the output list: ${file}`);
         let li = document.createElement('li');
         let link = document.createElement('a');
-        link.href = `/download/${file}`; // Adjust this to point to the download route in your Flask app
+        link.href = `/downloaded_files/${file}`; // Adjust this to point to the download route in your Flask app
         link.innerText = file;
         link.target = '_blank'; // Open in a new tab
         li.appendChild(link);
         outputList.appendChild(li);
     });
+}
+
+// Append logs to the logs container
+function appendLog(log) {
+    let logItem = document.createElement('div');
+    logItem.textContent = log;
+    logsContainer.appendChild(logItem);
+    logsContainer.scrollTop = logsContainer.scrollHeight; // Scroll to the latest log
 }
