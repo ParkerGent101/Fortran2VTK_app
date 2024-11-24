@@ -30,7 +30,7 @@ module purge
 module load nvhpc
 
 cd $SLURM_SUBMIT_DIR
-nvfortran -acc -Minfo=accel -fast {remote_dir}vtk_writer.f90 -o writer.exe &> compile_output.log
+nvfortran -acc -Minfo=accel -fast {remote_dir}{remote_file} -o writer.exe &> compile_output.log
 chmod +x writer.exe
 export OMP_NUM_THREADS=2
 srun ./writer.exe
@@ -59,6 +59,11 @@ def upload_and_submit():
         print("[ERROR] No files uploaded")
         return jsonify({'status': 'error', 'message': 'No files uploaded.'}), 400
 
+    # Get the uploaded file name (assuming it's the first file uploaded)
+    uploaded_file = files[0]
+    file_name = uploaded_file.filename
+
+    # Define the remote directory
     remote_dir = REMOTE_DIR_TEMPLATE.format(username=username)
     print(f"[DEBUG] Remote directory for user {username}: {remote_dir}")
 
@@ -77,13 +82,12 @@ def upload_and_submit():
         return jsonify({'status': 'error', 'message': 'SSH connection failed.'}), 500
 
     try:
-        # Upload files and Slurm script
-        for local_file in saved_files:
-            print(f"[DEBUG] Uploading file: {local_file}")
-            upload_file(ssh, local_file, os.path.join(remote_dir, os.path.basename(local_file)))
+        # Upload the file to the remote directory
+        print(f"[DEBUG] Uploading file: {file_name}")
+        upload_file(ssh, saved_files[0], os.path.join(remote_dir, file_name))
 
-        # Create and submit the Slurm script
-        slurm_script = SLURM_SCRIPT_TEMPLATE.format(remote_dir=remote_dir)
+        # Create and submit the Slurm script, using the uploaded file name
+        slurm_script = SLURM_SCRIPT_TEMPLATE.format(remote_dir=remote_dir, remote_file=file_name)
         print(f"[DEBUG] Generated Slurm script:\n{slurm_script}")
         job_id = submit_slurm_script(ssh, slurm_script, remote_dir)
 
