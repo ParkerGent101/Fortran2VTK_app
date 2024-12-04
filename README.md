@@ -2,7 +2,6 @@ Frotran2VTK  Application
 
 
 Description
-A brief description of your project goes here. Explain what the project does, who it is for, and any key features.
 This project is to upload fortran files to the AHPCC and retrieve .VTK files from it. You must be connect to the Univeristy of Arkansas 
 wifi or VPN provider to create SSH connections within the application.
 
